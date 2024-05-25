@@ -13,13 +13,13 @@ RUN apt-get update && \
         libzip-dev \
         unzip \
         mariadb-client \
-        libicu-dev
+        libicu-dev \
+    && docker-php-ext-install ftp \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Xdebug
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
-RUN install-php-extensions xdebug zip pdo_mysql mysqli @composer intl
+RUN install-php-extensions xdebug pdo_mysql mysqli @composer intl
 
-# Copy the current directory contents into the container at /var/www/html
 COPY --chown=www-data:www-data  . /var/www/html
 
 RUN	chmod o+w /var/www/html -R
