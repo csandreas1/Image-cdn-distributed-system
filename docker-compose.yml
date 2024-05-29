@@ -14,6 +14,7 @@ services:
             - laravel
             - nginxnet
             - dbnet
+            - ftpnet
     web:
         container_name: ex2-nginx
         image: nginx:latest
@@ -42,10 +43,74 @@ services:
             - laravel
         volumes:
             - db_data:/var/lib/mysql
+    nginx-proxy:
+        image: nginx:latest
+        restart: unless-stopped
+        container_name: nginx_proxy
+        networks:
+            - nginxcdn
+        volumes:
+            - ./nginx/nginx_proxy.conf:/etc/nginx/nginx.conf
+        ports:
+            - "8078:80"
+    nginx-node1:
+        image: nginx:latest
+        restart: unless-stopped
+        container_name: nginx_node1
+        networks:
+            - nginxcdn
+        volumes:
+            - node1_data:/usr/share/nginx/html/storage
+            - ./nginx/node1.conf:/etc/nginx/nginx.conf
+        ports:
+            - "8081:80"
+    nginx-node2:
+        image: nginx:latest
+        restart: unless-stopped
+        container_name: nginx_node2
+        networks:
+            - nginxcdn
+        volumes:
+            - node2_data:/usr/share/nginx/html/storage
+            - ./nginx/node2.conf:/etc/nginx/nginx.conf
+        ports:
+            - "8082:80"
+    nginx-node3:
+        image: nginx:latest
+        restart: unless-stopped
+        container_name: nginx_node23
+        networks:
+            - nginxcdn
+        volumes:
+            - node3_data:/usr/share/nginx/html/storage
+            - ./nginx/node3.conf:/etc/nginx/nginx.conf
+        ports:
+            - "8083:80"
+    ftp-server:
+        image: delfer/alpine-ftp-server:latest
+        container_name: ftp_server
+        environment:
+            USERS: "user|1234|10000"
+            ADDRESS: "0.0.0.0"
+        networks:
+            - ftpnet
+        volumes:
+            - node1_data:/node1_data
+            - node2_data:/node2_data
+            - node3_data:/node3_data
+        ports:
+            - 20:20
+            - 21:21
+            - "21000-21010:21000-21010"
 networks:
     laravel:
     nginxnet:
     dbnet:
+    ftpnet:
+    nginxcdn:
 
 volumes:
     db_data:
+    node1_data:
+    node2_data:
+    node3_data:

@@ -1,10 +1,7 @@
-# Use an official PHP runtime as a parent image
 FROM php:8.3-fpm
 
-# Set the working directory to /var/www/html
 WORKDIR /var/www/html
 
-# Install dependencies
 RUN apt-get update && \
     apt-get install -y \
         libfreetype-dev \
@@ -14,6 +11,7 @@ RUN apt-get update && \
         unzip \
         mariadb-client \
         libicu-dev \
+        rsync \
     && docker-php-ext-install ftp \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

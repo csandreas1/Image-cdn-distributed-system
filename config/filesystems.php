@@ -56,6 +56,17 @@ return [
             'throw' => false,
         ],
 
+        'image_sync' => [
+            'driver' => 'ftp',
+            'host' => env('FTP_HOST'),
+            'username' => env('FTP_USERNAME'),
+            'password' => env('FTP_PASSWORD'),
+            'root' => '1000',
+            'port' => 21,
+            'ssl'      => false, // Set to true if you need to connect via SSL
+            'timeout'  => 30,
+        ],
+
     ],
 
     /*
